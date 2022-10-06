@@ -43,15 +43,22 @@ const Registrar = () => {
     console.log("creando usuario...");
 
     try {
-      const { data } = await axios.post("http://localhost:4000/api/usuarios", {
-        nombre,
-        email,
-        password,
-      });
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/usuarios`,
+        {
+          nombre,
+          email,
+          password,
+        }
+      );
       setAlerta({
         msg: data.msg,
         error: false,
       });
+      setNombre("");
+      setEmail("");
+      setPass("");
+      setRepePass("");
     } catch (error) {
       console.log(error.response);
       setAlerta({
@@ -59,7 +66,6 @@ const Registrar = () => {
         error: true,
       });
     }
-    setAlerta({});
   };
 
   const { msg } = alerta;

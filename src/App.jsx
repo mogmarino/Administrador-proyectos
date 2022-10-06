@@ -6,6 +6,8 @@ import OlvidePass from "./paginas/OlvidePass";
 import NuevoPass from "./paginas/NuevoPass";
 import Registrar from "./paginas/Registrar";
 
+console.log(import.meta.env.VITE_BACKEND_URL);
+
 function App() {
   return (
     <BrowserRouter>
