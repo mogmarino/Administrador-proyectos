@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Alerta from "../components/Alerta";
-import axios from "axios";
+import clienteAxios from "../config/clienteAxios";
 
 const Registrar = () => {
   const [nombre, setNombre] = useState("");
@@ -43,14 +43,11 @@ const Registrar = () => {
     console.log("creando usuario...");
 
     try {
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/usuarios`,
-        {
-          nombre,
-          email,
-          password,
-        }
-      );
+      const { data } = await clienteAxios.post("/usuarios", {
+        nombre,
+        email,
+        password,
+      });
       setAlerta({
         msg: data.msg,
         error: false,
