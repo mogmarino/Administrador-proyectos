@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Alerta from "../components/Alerta";
 import clienteAxios from "../config/clienteAxios";
+import { useAuth } from "../hooks/useAuth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [alerta, setAlerta] = useState({});
 
+  const { auth, setAuth, cargando } = useAuth();
+
+  console.log(auth);
+  console.log(cargando);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -27,6 +32,7 @@ const Login = () => {
       // console.log(data);
       setAlerta({});
       localStorage.setItem("token", data.token);
+      setAuth(data);
     } catch (error) {
       setAlerta({
         msg: error.response.data.msg,
