@@ -6,7 +6,6 @@ import Sidebar from "../components/Sidebar";
 
 const RutaProtegida = () => {
   const { auth, cargando } = useAuth();
-  console.log(auth);
 
   //   aqui se le puede colocar un spinner de carga
   if (cargando) return "Cargando...";

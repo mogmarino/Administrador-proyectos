@@ -8,10 +8,11 @@ import NuevoPass from "./paginas/NuevoPass";
 import Registrar from "./paginas/Registrar";
 import Proyectos from "./paginas/Proyectos";
 import NuevoProyecto from "./paginas/NuevoProyecto";
+import Proyecto from "./paginas/Proyecto";
 import { AuthProvider } from "./context/AuthProvider";
 import { ProyectosProvider } from "./context/ProyectosProvider";
 
-console.log(import.meta.env.VITE_BACKEND_URL);
+// console.log(import.meta.env.VITE_BACKEND_URL);
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/proyectos" element={<RutaProtegida />}>
               <Route index element={<Proyectos />} />
               <Route path="crear-proyecto" element={<NuevoProyecto />} />
+              <Route path=":id" element={<Proyecto />} />
             </Route>
           </Routes>
         </ProyectosProvider>

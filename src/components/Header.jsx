@@ -17,7 +17,7 @@ const Header = () => {
           </Link>
           <button
             type="button"
-            className="uppercase bg-sky-600 text-white p-3 rounded-md font-bold text-sm"
+            className="uppercase bg-sky-600 text-white p-3 rounded-md font-bold text-sm hover:bg-sky-700 transition-colors"
           >
             Cerrar Sesion
           </button>
