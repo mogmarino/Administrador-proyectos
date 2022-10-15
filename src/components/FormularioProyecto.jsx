@@ -1,17 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useProyectos } from "../hooks/useProyectos";
 import Alerta from "./Alerta";
 import { useNavigate } from "react-router-dom";
 
 const FormularioProyecto = () => {
+  const [id, setId] = useState(null);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [fechaEntrega, setFechaEntrega] = useState("");
   const [cliente, setCliente] = useState("");
 
-  const { mostrarAlerta, alerta, submitProyecto } = useProyectos();
+  const { mostrarAlerta, alerta, submitProyecto, proyecto } = useProyectos();
+
+  const params = useParams();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (params.id) {
+      setId(proyecto._id);
+      setNombre(proyecto.nombre);
+      setDescripcion(proyecto.descripcion);
+      setFechaEntrega(proyecto.fechaEntrega?.split("T")[0]);
+      setCliente(proyecto.cliente);
+    }
+  }, [params]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,9 +39,10 @@ const FormularioProyecto = () => {
     }
 
     // pasar los datos al provider
-    await submitProyecto({ nombre, descripcion, fechaEntrega, cliente });
+    await submitProyecto({ id, nombre, descripcion, fechaEntrega, cliente });
 
     // en las proximas lineas se reinicia el formulario
+    setId(null);
     setNombre("");
     setDescripcion("");
     setFechaEntrega("");
@@ -106,7 +121,7 @@ const FormularioProyecto = () => {
       </div>
       <input
         type="submit"
-        value="Crear Proyecto"
+        value={id ? "Actualizar Proyecto" : "Crear Proyecto"}
         className="bg-sky-600 p-3 text-white font-bold cursor-pointer rounded-lg hover:bg-sky-700 transition-colors w-full uppercase"
       />
     </form>
