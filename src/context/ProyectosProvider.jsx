@@ -32,9 +32,7 @@ const ProyectosProvider = ({ children }) => {
         console.log(error);
       }
     };
-    return () => {
-      obtenerProyectos();
-    };
+    obtenerProyectos();
   }, []);
 
   const mostrarAlerta = (alerta) => {
@@ -48,9 +46,9 @@ const ProyectosProvider = ({ children }) => {
     console.log(proyecto);
 
     if (proyecto.id) {
-      editarProyecto(proyecto);
+      await editarProyecto(proyecto);
     } else {
-      crearProyecto(proyecto);
+      await crearProyecto(proyecto);
     }
   };
 
@@ -72,7 +70,23 @@ const ProyectosProvider = ({ children }) => {
         proyecto,
         config
       );
-      console.log(data);
+
+      // sincronizar el state
+      const proyectosActualizados = proyectos.map((proyectoState) =>
+        proyectoState._id === data._id ? data : proyectoState
+      );
+      setProyectos(proyectosActualizados);
+
+      // mostrar la alerta y redireccionar
+      setAlerta({
+        msg: "Proyecto Actualizado Correctamente",
+        error: false,
+      });
+
+      setTimeout(() => {
+        setAlerta({});
+        navigate("/proyectos");
+      }, 3000);
     } catch (error) {
       console.log(error);
     }
@@ -129,6 +143,42 @@ const ProyectosProvider = ({ children }) => {
       setCargando(false);
     }
   };
+
+  const eliminarProyecto = async (id) => {
+    console.log("Eliminando...", id);
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios.delete(`/proyectos/${id}`, config);
+
+      // sincronizar el state
+      const proyectosActualizados = proyectos.filter(
+        (proyectoState) => proyectoState._id !== id
+      );
+
+      setProyectos(proyectosActualizados);
+
+      setAlerta({
+        msg: data.msg,
+        error: false,
+      });
+
+      setTimeout(() => {
+        setAlerta({});
+        navigate("/proyectos");
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ProyectosContext.Provider
       value={{
@@ -139,6 +189,7 @@ const ProyectosProvider = ({ children }) => {
         obtenerProyecto,
         proyecto,
         cargando,
+        eliminarProyecto,
       }}
     >
       {children}
