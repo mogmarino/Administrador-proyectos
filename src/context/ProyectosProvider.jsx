@@ -9,6 +9,7 @@ const ProyectosProvider = ({ children }) => {
   const [alerta, setAlerta] = useState({});
   const [proyecto, setProyecto] = useState({});
   const [cargando, setCargando] = useState(false);
+  const [modalFormularioTarea, setModalFormularioTarea] = useState(false);
 
   const navigate = useNavigate();
 
@@ -179,6 +180,29 @@ const ProyectosProvider = ({ children }) => {
       console.log(error);
     }
   };
+
+  const handleModalTarea = () => {
+    setModalFormularioTarea(!modalFormularioTarea);
+  };
+
+  const submitTarea = async (tarea) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const { data } = await clienteAxios.post("/tareas", tarea, config);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ProyectosContext.Provider
       value={{
@@ -190,6 +214,9 @@ const ProyectosProvider = ({ children }) => {
         proyecto,
         cargando,
         eliminarProyecto,
+        handleModalTarea,
+        modalFormularioTarea,
+        submitTarea,
       }}
     >
       {children}

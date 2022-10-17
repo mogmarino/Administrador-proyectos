@@ -7,8 +7,8 @@ import ModalFormularioTarea from "../components/ModalFormularioTarea";
 const Proyecto = () => {
   const params = useParams();
   const { id } = params;
-  const { obtenerProyecto, proyecto, cargando } = useProyectos();
-  const [modal, setModal] = useState(true);
+  const { obtenerProyecto, proyecto, cargando, handleModalTarea } =
+    useProyectos();
 
   useEffect(() => {
     return () => {
@@ -47,7 +47,7 @@ const Proyecto = () => {
         </div>
       </div>
       <button
-        onClick={() => setModal(true)}
+        onClick={handleModalTarea}
         type="button"
         className="text.sm px-5 py-3 md:w-auto rounded-lg uppercase font-bold bg-sky-400 text-white text-center mt-5 flex gap-2 items-center justify-center cursor-pointer hover:bg-sky-600 transition-colors"
       >
@@ -67,7 +67,7 @@ const Proyecto = () => {
         </svg>
         Nueva Tarea
       </button>
-      <ModalFormularioTarea modal={modal} setModal={setModal} />
+      <ModalFormularioTarea />
     </>
   );
 };
