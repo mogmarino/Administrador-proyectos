@@ -3,13 +3,19 @@ import { useParams } from "react-router-dom";
 import { useProyectos } from "../hooks/useProyectos";
 import { Link } from "react-router-dom";
 import ModalFormularioTarea from "../components/ModalFormularioTarea";
+import ModalEliminarTarea from "../components/ModalEliminarTarea";
+import ModalEliminarColaborador from "../components/ModalEliminarColaborador";
 import Tarea from "../components/Tarea";
+import Alerta from "../components/Alerta";
+import Colaborador from "../components/Colaborador";
 
 const Proyecto = () => {
   const params = useParams();
   const { id } = params;
-  const { obtenerProyecto, proyecto, cargando, handleModalTarea } =
+  const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta } =
     useProyectos();
+
+  // console.log(proyecto);
 
   useEffect(() => {
     return () => {
@@ -17,11 +23,11 @@ const Proyecto = () => {
     };
   }, []);
 
-  console.log(proyecto);
-
   const { nombre } = proyecto;
 
   if (cargando) return "Cargando...";
+
+  const { msg } = alerta;
 
   return (
     <>
@@ -69,16 +75,45 @@ const Proyecto = () => {
         Nueva Tarea
       </button>
       <p className="font-bold text-xl mt-10">Tareas del proyecto</p>
+      <div className="flex justify-center">
+        <div className="w-full md:w-1/3 lg:w-1/4">
+          {msg && <Alerta alerta={alerta} />}
+        </div>
+      </div>
       <div className="bg-white shadow mt-10 rounded-lg">
         {proyecto.tareas?.length ? (
-          proyecto.tareas.map((tarea) => <Tarea tarea={tarea} />)
+          proyecto.tareas.map((tarea) => (
+            <Tarea key={tarea._id} tarea={tarea} />
+          ))
         ) : (
           <p className="text-center mt-5 p-10">
             No hay tareas en este proyecto
           </p>
         )}
       </div>
+      <div className="flex items-center justify-between mt-10">
+        <p className="font-bold text-xl">Colaboradores</p>
+        <Link
+          to={`/proyectos/nuevo-colaborador/${proyecto._id}`}
+          className="text-gray-400 hover:text-black uppercase font-bold"
+        >
+          Añadir
+        </Link>
+      </div>
+      <div className="bg-white shadow mt-10 rounded-lg">
+        {proyecto.colaboradores?.length ? (
+          proyecto.colaboradores.map((colaborador) => (
+            <Colaborador key={colaborador._id} colaborador={colaborador} />
+          ))
+        ) : (
+          <p className="text-center mt-5 p-10">
+            No hay colaboradores en este proyecto
+          </p>
+        )}
+      </div>
       <ModalFormularioTarea />
+      <ModalEliminarTarea />
+      <ModalEliminarColaborador />
     </>
   );
 };
