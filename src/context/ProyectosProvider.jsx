@@ -131,7 +131,6 @@ const ProyectosProvider = ({ children }) => {
 
   const obtenerProyecto = async (id) => {
     setCargando(true);
-    setAlerta({});
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -144,6 +143,7 @@ const ProyectosProvider = ({ children }) => {
       };
       const { data } = await clienteAxios(`/proyectos/${id}`, config);
       setProyecto(data);
+      setAlerta({});
     } catch (error) {
       setAlerta({
         msg: error.response.data.msg,
@@ -422,6 +422,11 @@ const ProyectosProvider = ({ children }) => {
       }, 3000);
     } catch (error) {
       console.log(error.response);
+      setAlerta({
+        msg: error.response.data.msg,
+        error: true,
+      });
+      setModalEliminarColaborador(false);
     }
   };
   return (
