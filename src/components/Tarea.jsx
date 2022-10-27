@@ -15,6 +15,11 @@ const Tarea = ({ tarea }) => {
         <p className="mb-1 text-sm uppercase text-gray-500">{descripcion}</p>
         <p className="mb-1 text-sm">{formatearFecha(fechaEntrega)}</p>
         <p className="mb-1 text-gray-600">Prioridad: {prioridad}</p>
+        {estado && (
+          <p className="text-xs bg-green-600 uppercase rounded-lg p-1 text-white text-center w-fit">
+            completada por: {tarea.completado.nombre}
+          </p>
+        )}
       </div>
       <div className="flex gap-3">
         {admin && (
