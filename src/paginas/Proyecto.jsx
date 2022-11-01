@@ -9,12 +9,21 @@ import ModalEliminarColaborador from "../components/ModalEliminarColaborador";
 import Tarea from "../components/Tarea";
 import Alerta from "../components/Alerta";
 import Colaborador from "../components/Colaborador";
+import { io } from "socket.io-client";
+
+let socket;
 
 const Proyecto = () => {
   const params = useParams();
   const { id } = params;
-  const { obtenerProyecto, proyecto, cargando, handleModalTarea, alerta } =
-    useProyectos();
+  const {
+    obtenerProyecto,
+    proyecto,
+    cargando,
+    handleModalTarea,
+    alerta,
+    submitTareasProyecto,
+  } = useProyectos();
 
   // verificar si es admin o no
   const admin = useAdmin();
@@ -25,9 +34,24 @@ const Proyecto = () => {
     };
   }, []);
 
+  useEffect(() => {
+    socket = io(import.meta.env.VITE_BACKEND_URL);
+    socket.emit("abrir proyecto", id);
+  }, []);
+
+  useEffect(() => {
+    socket.on("tarea agregada", (nuevaTarea) => {
+      console.log(nuevaTarea);
+      if (nuevaTarea.proyecto === proyecto._id) {
+        console.log("coincidencia de los id");
+        submitTareasProyecto(nuevaTarea);
+      }
+    });
+  });
+
   const { nombre } = proyecto;
 
-  console.log(proyecto);
+  // console.log(proyecto);
 
   if (cargando) return "Cargando...";
 
