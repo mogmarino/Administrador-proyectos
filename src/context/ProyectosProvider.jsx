@@ -36,7 +36,6 @@ const ProyectosProvider = ({ children }) => {
         };
 
         const { data } = await clienteAxios("/proyectos", config);
-        console.log(data);
         setProyectos(data);
       } catch (error) {
         console.log(error);
@@ -208,8 +207,6 @@ const ProyectosProvider = ({ children }) => {
   };
 
   const submitTarea = async (tarea) => {
-    console.log(tarea);
-
     if (tarea?.id) {
       await editarTarea(tarea);
     } else {
@@ -261,11 +258,9 @@ const ProyectosProvider = ({ children }) => {
         tarea,
         config
       );
-      const proyectoActualizado = { ...proyecto };
-      proyectoActualizado.tareas = proyectoActualizado.tareas.map(
-        (tareaState) => (tareaState._id === data._id ? data : tareaState)
-      );
-      setProyecto(proyectoActualizado);
+
+      // socket
+      socket.emit("actualizar tarea", data);
 
       setAlerta({});
       setModalFormularioTarea(false);
@@ -285,7 +280,6 @@ const ProyectosProvider = ({ children }) => {
   };
 
   const eliminarTarea = async () => {
-    console.log(tarea);
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -306,13 +300,11 @@ const ProyectosProvider = ({ children }) => {
         error: false,
       });
 
-      const proyectoActualizado = { ...proyecto };
-      proyectoActualizado.tareas = proyectoActualizado.tareas.filter(
-        (tareaState) => tareaState._id !== tarea._id
-      );
-
-      setProyecto(proyectoActualizado);
       setModalEliminarTarea(false);
+
+      // socket
+      socket.emit("eliminar tarea", tarea);
+
       setTarea({});
       setTimeout(() => {
         setAlerta({});
@@ -458,13 +450,12 @@ const ProyectosProvider = ({ children }) => {
         {},
         config
       );
-      const proyectoActualizado = { ...proyecto };
-      proyectoActualizado.tareas = proyectoActualizado.tareas.map(
-        (tareaState) => (tareaState._id === data._id ? data : tareaState)
-      );
-      setProyecto(proyectoActualizado);
+
       setTarea({});
       setAlerta({});
+
+      // socket
+      socket.emit("cambiar estado", data);
     } catch (error) {
       console.log(error.response);
     }
@@ -479,6 +470,30 @@ const ProyectosProvider = ({ children }) => {
   const submitTareasProyecto = (tarea) => {
     const proyectoActualizado = { ...proyecto };
     proyectoActualizado.tareas = [...proyectoActualizado.tareas, tarea];
+    setProyecto(proyectoActualizado);
+  };
+
+  const eliminarTareaProyecto = (tarea) => {
+    const proyectoActualizado = { ...proyecto };
+    proyectoActualizado.tareas = proyectoActualizado.tareas.filter(
+      (tareaState) => tareaState._id !== tarea._id
+    );
+    setProyecto(proyectoActualizado);
+  };
+
+  const actualizarTareaProyecto = (tarea) => {
+    const proyectoActualizado = { ...proyecto };
+    proyectoActualizado.tareas = proyectoActualizado.tareas.map((tareaState) =>
+      tareaState._id === tarea._id ? tarea : tareaState
+    );
+    setProyecto(proyectoActualizado);
+  };
+
+  const estadoTareaActualizado = (tarea) => {
+    const proyectoActualizado = { ...proyecto };
+    proyectoActualizado.tareas = proyectoActualizado.tareas.map((tareaState) =>
+      tareaState._id === tarea._id ? tarea : tareaState
+    );
     setProyecto(proyectoActualizado);
   };
   return (
@@ -510,6 +525,9 @@ const ProyectosProvider = ({ children }) => {
         handleBuscador,
         buscador,
         submitTareasProyecto,
+        eliminarTareaProyecto,
+        actualizarTareaProyecto,
+        estadoTareaActualizado,
       }}
     >
       {children}

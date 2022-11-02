@@ -23,6 +23,9 @@ const Proyecto = () => {
     handleModalTarea,
     alerta,
     submitTareasProyecto,
+    eliminarTareaProyecto,
+    actualizarTareaProyecto,
+    estadoTareaActualizado,
   } = useProyectos();
 
   // verificar si es admin o no
@@ -41,10 +44,24 @@ const Proyecto = () => {
 
   useEffect(() => {
     socket.on("tarea agregada", (nuevaTarea) => {
-      console.log(nuevaTarea);
       if (nuevaTarea.proyecto === proyecto._id) {
-        console.log("coincidencia de los id");
         submitTareasProyecto(nuevaTarea);
+      }
+    });
+    socket.on("tarea eliminada", (tareaEliminada) => {
+      if (tareaEliminada.proyecto === proyecto._id) {
+        eliminarTareaProyecto(tareaEliminada);
+      }
+    });
+    socket.on("tarea actualizada", (tareaActualizada) => {
+      if (tareaActualizada.proyecto._id === proyecto._id) {
+        actualizarTareaProyecto(tareaActualizada);
+      }
+    });
+
+    socket.on("estado actualizado", (tareaActualizada) => {
+      if (tareaActualizada.proyecto._id === proyecto._id) {
+        estadoTareaActualizado(tareaActualizada);
       }
     });
   });
