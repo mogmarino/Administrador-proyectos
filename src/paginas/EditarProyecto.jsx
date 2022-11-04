@@ -15,8 +15,6 @@ const EditarProyecto = () => {
     };
   }, []);
 
-  console.log(proyecto);
-
   const handleClick = () => {
     if (confirm("¿Desea eliminar este proyecto?")) {
       console.log("si");

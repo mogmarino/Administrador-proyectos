@@ -465,7 +465,6 @@ const ProyectosProvider = ({ children }) => {
   };
 
   const handleBuscador = () => {
-    console.log("handleBuscador");
     setBuscador(!buscador);
   };
 

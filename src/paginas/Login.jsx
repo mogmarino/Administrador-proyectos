@@ -13,8 +13,6 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  console.log(auth);
-  console.log(cargando);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
